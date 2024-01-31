@@ -36,12 +36,24 @@ def compare_cal_files(file1_path, file2_path, threshold, output_text):
     start_line_file1 = find_start_line(file1_contents)
     start_line_file2 = find_start_line(file2_contents)
 
+    # Extract SNC software version
+    version_line1 = file1_contents[2].strip()
+    version_line2 = file2_contents[2].strip()
+
+    # Output a warning if version difference is detected
+    if version_line1 != version_line2:
+        output_text.insert(tk.END, "Differences in SNC software have been detected between the two .cal files, please proceed with caution as unexpected results may arise.\n")
+
     # Initialize variables to store maximum percentage difference
     max_percentage_diff = 0
     max_percentage_diff_line = 0
 
     # Iterate through lines starting from the specified line
     for i, (line1, line2) in enumerate(zip_longest(file1_contents[start_line_file1:], file2_contents[start_line_file2:], fillvalue=''), start=start_line_file1):
+        # Stop comparison if the line starts with 'Angular dependence'
+        if line1.startswith('Angular dependence'):
+            break
+
         parts1 = line1.split('\t')
         parts2 = line2.split('\t')
 
@@ -124,5 +136,14 @@ output_text.grid(row=4, column=0, columnspan=3, padx=10, pady=10)
 
 # Run the GUI
 app.mainloop()
+
+
+
+
+
+
+
+
+
 
 
